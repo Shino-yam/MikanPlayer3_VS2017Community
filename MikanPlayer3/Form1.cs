@@ -220,6 +220,8 @@ namespace MikanPlayer3
                         InitPlayList();
                     }
 
+                    threadPlayer.SetPlayList(null);
+
                     break;
 
                 // プレイリスト1件削除

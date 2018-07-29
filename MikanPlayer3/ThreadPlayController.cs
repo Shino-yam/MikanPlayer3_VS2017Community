@@ -67,6 +67,12 @@ namespace MikanPlayer3
         public void SetPlayList(List<string> pList)
         {
             this.playList = pList;
+
+            if(pList == null)
+            {
+                this.nowPlayFile = "";
+                this.playFile = "";
+            }
         }
 
 
@@ -104,6 +110,7 @@ namespace MikanPlayer3
         {
             // 自前で持っているプレイリストを参照
             // 最大index，現index を取得
+
             int maxIndex = this.playList.Count - 1;
             int idx = this.playList.IndexOf(this.nowPlayFile);
 
