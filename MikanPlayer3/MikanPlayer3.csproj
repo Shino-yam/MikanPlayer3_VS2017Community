@@ -56,6 +56,7 @@
     <Compile Include="PlayMP3.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThreadPlayController.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -140,7 +141,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MikanLogo.png" />
-    <None Include="Resources\MikanLogo.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

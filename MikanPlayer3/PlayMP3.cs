@@ -56,6 +56,9 @@ namespace MikanPlayer3
             _wmp.URL = filePath;
             _wmp.Controls.play();
 
+            // test: 再生時間の取得
+            decimal playTime = (decimal)_wmp.currentMedia.duration();
+
             return true;
         }
 
@@ -77,15 +80,15 @@ namespace MikanPlayer3
         /// 再生状態の取得
         /// </summary>
         /// <returns></returns>
-        public Boolean isPlayEnd()
+        public Boolean IsPlayEnd()
         {
-            int state = _wmp.Play.playstate;
+            int state = _wmp.playState();
 
-            if ( state != 8 )
+            if ((state == 8) || (state == 1))
             {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
     }

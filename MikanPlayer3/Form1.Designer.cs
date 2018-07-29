@@ -280,8 +280,8 @@
         private System.Windows.Forms.Button buttonPlayListUp;
         private System.Windows.Forms.Button buttonPlayListDown;
         private System.Windows.Forms.Button buttonPlayListDeleteOnce;
-        private System.Windows.Forms.ListBox listBoxPlayList;
         private System.Windows.Forms.Panel panelImg;
+        public System.Windows.Forms.ListBox listBoxPlayList;
     }
 }
 

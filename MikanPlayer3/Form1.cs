@@ -16,16 +16,22 @@ namespace MikanPlayer3
         // MikanPlayer3Main のためのオブジェクト
         private MikanPlayerMain mp3Main = new MikanPlayerMain();
 
+        // ThreadPlayContgroller のためのオブジェクト
+        private ThreadPlayController threadPlayer = new ThreadPlayController();
+
         // プレイリストがカラの時の文字列
         private const string EMPTY_PLAYLIST_MESSAGE01 = "*** プレイリストにファイルがありません。";
         private const string EMPTY_PLAYLIST_MESSAGE02 = "*** 「プレイリストに追加」で，ファイルを追加してください。";
-        private const string EMPTY_PLAYLIST_MESSAGE03 = "*** 1曲再生毎に停止するのは仕様です。 次の曲を自動再生するように要改良。";
+        //private const string EMPTY_PLAYLIST_MESSAGE03 = "*** 1曲再生毎に停止するのは仕様です。 次の曲を自動再生するように要改良。";
 
         // プレイリストがカラかどうかのフラグ
         private Boolean isEmptyPlayList = true;
 
         // プレイリストに追加開始しているかどうかのフラグ
         private Boolean isAddPlayList = false;
+
+        //// 再生中かどうかのフラグ
+        //private Boolean isPlaying = false;
 
         // プレイリストの最大index保持用
         private int maxIndex = 0;
@@ -44,11 +50,15 @@ namespace MikanPlayer3
             // プレイリストの初期化
             InitPlayList();
 
-            // 音量の初期化
-            // デフォルトで50になっている？
+            //// 音量の初期化
+            //// デフォルトで50になっている？
             int nowVolume = mp3Main.getVolume();
-            mp3Main.setVolume(nowVolume);
+            threadPlayer.setVolume(nowVolume);
+            //mp3Main.SetVolume(nowVolume);
             trackBarVolume.Value = nowVolume;
+
+            //
+            threadPlayer.SetFormMain(this);
 
         }
 
@@ -64,7 +74,7 @@ namespace MikanPlayer3
                 listBoxPlayList.Items.Clear();
                 listBoxPlayList.Items.Add(EMPTY_PLAYLIST_MESSAGE01);
                 listBoxPlayList.Items.Add(EMPTY_PLAYLIST_MESSAGE02);
-                listBoxPlayList.Items.Add(EMPTY_PLAYLIST_MESSAGE03);
+                //listBoxPlayList.Items.Add(EMPTY_PLAYLIST_MESSAGE03);
                 listBoxPlayList.Enabled = false;
                 isAddPlayList = false;
 
@@ -138,6 +148,7 @@ namespace MikanPlayer3
             
             listBoxPlayList.SelectedIndex = this.nowIndex;
 
+            threadPlayer.SetPlayList(files);
         }
 
 
@@ -288,34 +299,69 @@ namespace MikanPlayer3
                 // 再生
                 case "buttonPlay":
 
-                    // ファイル再生メソッド呼び出し
-                    List<string> infoData = mp3Main.Play(nowIndex);
+                    string playFile = mp3Main.getPlayFile(nowIndex);
 
                     // メディア情報の表示
-                    string[] infoTitle = {
-                        "アーティスト： ",
-                        "タイトル： ",
-                        "ジャンル： ",
-                        "コメント： ",
-                        "アルバム： ",
-                        "年： "
-                    };
+                    DisplayInfo(playFile);
+                    //List<string> infoData = mp3Main.getInfo(playFile); ;
 
-                    string infoStr = "";
-                    for( int i = 0; i < infoData.Count; i++ )
-                    {
-                        infoStr += infoTitle[i] + infoData[i] + "\r\n";
-                    }
+                    //string[] infoTitle = {
+                    //    "アーティスト： ",
+                    //    "タイトル： ",
+                    //    "ジャンル： ",
+                    //    "コメント： ",
+                    //    "アルバム： ",
+                    //    "年： "
+                    //};
 
-                    textBoxMp3Data.Text = infoStr;
+                    //string infoStr = "";
+                    //for (int i = 0; i < infoData.Count; i++)
+                    //{
+                    //    infoStr += infoTitle[i] + infoData[i] + "\r\n";
+                    //}
+
+                    //textBoxMp3Data.Text = infoStr;
+
+                    // 再生
+                    threadPlayer.SetPlayFile(playFile);
+
+
+
+
+
+                    //// ファイル再生メソッド呼び出し
+                    //List<string> infoData = mp3Main.Play(nowIndex);
+
+                    //// メディア情報の表示
+                    //string[] infoTitle = {
+                    //    "アーティスト： ",
+                    //    "タイトル： ",
+                    //    "ジャンル： ",
+                    //    "コメント： ",
+                    //    "アルバム： ",
+                    //    "年： "
+                    //};
+
+                    //string infoStr = "";
+                    //for( int i = 0; i < infoData.Count; i++ )
+                    //{
+                    //    infoStr += infoTitle[i] + infoData[i] + "\r\n";
+                    //}
+
+                    //textBoxMp3Data.Text = infoStr;
 
                     break;
 
                 // 停止
                 case "buttonStop":
 
+                    threadPlayer.SetPlayFile("");
+
+
+
                     // 再生停止メソッド呼び出し
-                    mp3Main.Stop();
+                    threadPlayer.PushStopButton();
+                    //this.isPlaying = !mp3Main.Stop();
 
                     textBoxMp3Data.Text = "*** 再生を停止しています ***";
 
@@ -394,9 +440,27 @@ namespace MikanPlayer3
         /// <summary>
         /// 情報表示
         /// </summary>
-        public void displayInfo(string infoStr)
+        public void DisplayInfo(string filePath)
         {
+            List<string> infoData = mp3Main.getInfo(filePath); ;
+
+            string[] infoTitle = {
+                "アーティスト： ",
+                "タイトル： ",
+                "ジャンル： ",
+                "コメント： ",
+                "アルバム： ",
+                "年： "
+            };
+
+            string infoStr = "";
+            for (int i = 0; i < infoData.Count; i++)
+            {
+                infoStr += infoTitle[i] + infoData[i] + "\r\n";
+            }
+
             textBoxMp3Data.Text = infoStr;
+
         }
 
 
@@ -408,7 +472,25 @@ namespace MikanPlayer3
         private void trackBarVolume_Scroll(object sender, EventArgs e)
         {
             int volumeSetting = trackBarVolume.Value;
-            mp3Main.setVolume(volumeSetting);
+
+            threadPlayer.setVolume(volumeSetting);
+
+            //mp3Main.SetVolume(volumeSetting);
         }
+
+
+        /// <summary>
+        /// プレイリストの指定されたindexを選択する
+        /// </summary>
+        /// <param name="index"></param>
+        public void SelectPlayList(int index)
+        {
+            //FormMain frm = new FormMain();
+            listBoxPlayList.SelectedIndex = index;
+        }
+
+
+
+
     }
 }

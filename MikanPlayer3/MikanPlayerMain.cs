@@ -8,8 +8,6 @@ namespace MikanPlayer3
     
     class MikanPlayerMain
     {
-        // FormMain のオブジェクト
-        private FormMain frm = null;
 
         // mp3データオブジェクト
         private DataObjectMP3 mp3DO = new DataObjectMP3();
@@ -108,8 +106,7 @@ namespace MikanPlayer3
             mp3DO.swap(index1, index2);
         }
 
-
-
+        
         /// <summary>
         /// プレイリストindexの操作
         /// </summary>
@@ -161,32 +158,26 @@ namespace MikanPlayer3
 
 
         /// <summary>
-        /// 再生
+        /// 指定されたindexからファイルパスを返す
         /// </summary>
         /// <param name="index"></param>
-        public List<string> Play(int index)
+        /// <returns></returns>
+        public string getPlayFile(int index)
         {
-            // 現在，再生中であれば停止
-            if(isNowPlaying)
-            {
-                mp3.Stop();
-                this.isNowPlaying = false;
-            }
-
             // index からファイル名を取得
             string filePath = mp3DO.getFilePath(index);
             mp3DO.setNowPlayIndex(index);
 
-                        // ファイル存在チェック，ファイルが存在しなければ処理をやめる
-            Boolean isFileExist = System.IO.File.Exists(filePath);
-            if(!isFileExist)
-            {
-                return null;
-            }
+            return filePath;
+        }
 
-            // 再生中フラグのセット
-            this.isNowPlaying = true;
 
+        /// <summary>
+        /// mp3情報の取得
+        /// </summary>
+        /// <returns></returns>
+        public List<string> getInfo(string filePath)
+        {
             // mp3情報を取得
             List<string> ret = new List<string>();
 
@@ -206,46 +197,97 @@ namespace MikanPlayer3
             ret.Add(f.GetDetailsOf(item, 14)); // アルバムタイトル情報
             ret.Add(f.GetDetailsOf(item, 15)); // 年情報
 
-            mp3.Play(filePath);
-
-            return ret;
+            return ret; 
         }
+
+
+        /// <summary>
+        /// 再生
+        /// </summary>
+        /// <param name="index"></param>
+        //public List<string> Play(int index)
+        //{
+        //    // 現在，再生中であれば停止
+        //    if (isNowPlaying)
+        //    {
+        //        mp3.Stop();
+        //        this.isNowPlaying = false;
+        //    }
+
+        //    // index からファイル名を取得
+        //    string filePath = mp3DO.getFilePath(index);
+        //    mp3DO.setNowPlayIndex(index);
+
+        //    // ファイル存在チェック，ファイルが存在しなければ処理をやめる
+        //    Boolean isFileExist = System.IO.File.Exists(filePath);
+        //    if (!isFileExist)
+        //    {
+        //        return null;
+        //    }
+
+        //    // 再生中フラグのセット
+        //    this.isNowPlaying = true;
+
+        //    // mp3情報を取得
+        //    List<string> ret = new List<string>();
+
+        //    Shell32.Shell shell = new Shell32.Shell();
+        //    string fileName = System.IO.Path.GetFileName(filePath);
+        //    string path = filePath.Replace(fileName, "");
+
+        //    Folder f = shell.NameSpace(path);
+        //    FolderItem item = f.ParseName(fileName);
+
+        //    // ※下記の設定は Windows10 のもの
+        //    //
+        //    ret.Add(f.GetDetailsOf(item, 13)); // アーティスト情報
+        //    ret.Add(f.GetDetailsOf(item, 21)); // タイトル情報
+        //    ret.Add(f.GetDetailsOf(item, 16)); // ジャンル情報
+        //    ret.Add(f.GetDetailsOf(item, 24)); // コメント情報
+        //    ret.Add(f.GetDetailsOf(item, 14)); // アルバムタイトル情報
+        //    ret.Add(f.GetDetailsOf(item, 15)); // 年情報
+
+        //    mp3.Play(filePath);
+
+        //    return ret;
+        //}
 
 
         /// <summary>
         /// 停止
         /// </summary>
-        public void Stop()
-        {
-            // 現在，再生していなければ処理をやめる
-            if(!isNowPlaying)
-            {
-                return;
-            }
+        //public Boolean Stop()
+        //{
+        //    // 現在，再生していなければ処理をやめる
+        //    if (!isNowPlaying)
+        //    {
+        //        return false;
+        //    }
 
-            // 再生中フラグのリセット
-            this.isNowPlaying = false;
+        //    // 再生中フラグのリセット
+        //    this.isNowPlaying = false;
 
-            mp3.Stop();
+        //    mp3.Stop();
 
-        }
+        //    return true;
+        //}
 
 
         /// <summary>
         /// 再生状態の取得
         /// </summary>
         /// <returns></returns>
-        public Boolean playState()
-        {
-            return mp3.isPlayEnd();
-        }
+        //public Boolean PlayState()
+        //{
+        //    return mp3.IsPlayEnd();
+        //}
 
 
         /// <summary>
         /// 音量設定
         /// </summary>
         /// <param name="vol"></param>
-        public void setVolume(int vol)
+        public void SetVolume(int vol)
         {
             mp3.SetVolume(vol);
         }
