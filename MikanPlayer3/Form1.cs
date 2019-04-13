@@ -83,6 +83,9 @@ namespace MikanPlayer3
 
                 // ロゴを表示する
                 panelImg.Visible = true;
+
+                // ボタンを無効化する
+                this.SetButtonState(false);
             }
             else
             {
@@ -97,6 +100,9 @@ namespace MikanPlayer3
 
                     // ロゴを消す
                     panelImg.Visible = false;
+
+                    // ボタンを有効化する
+                    this.SetButtonState(true);
                 }
                 listBoxPlayList.Enabled = true;
                 isAddPlayList = true;
@@ -491,6 +497,18 @@ namespace MikanPlayer3
             listBoxPlayList.SelectedIndex = index;
         }
 
+
+        /// <summary>
+        /// ボタン状態を設定する
+        /// </summary>
+        /// <param name="isEnable">true:Enable</param>
+        public void SetButtonState(bool isEnable)
+        {
+            this.buttonReverse.Enabled = isEnable;
+            this.buttonPlay.Enabled = isEnable;
+            this.buttonStop.Enabled = isEnable;
+            this.buttonForward.Enabled = isEnable;
+        }
 
 
 
